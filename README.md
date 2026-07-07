@@ -1,5 +1,12 @@
 # checkpassword 0.90 — Debian 13 build
 
+[![License](https://img.shields.io/badge/License-0BSD-blue.svg)](https://opensource.org/license/0bsd)
+![GitHub all releases](https://img.shields.io/github/downloads/rgglez/classic-checkpassword/total)
+![GitHub issues](https://img.shields.io/github/issues/rgglez/classic-checkpassword)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/y/rgglez/classic-checkpassword)
+![GitHub stars](https://img.shields.io/github/stars/rgglez/classic-checkpassword?style=social)
+![GitHub forks](https://img.shields.io/github/forks/rgglez/classic-checkpassword?style=social)
+
 `checkpassword` is D. J. Bernstein's minimal password-checking tool. It reads a
 login name, password, and timestamp on file descriptor 3, verifies the
 credentials against the system password database, and — on success — drops
