@@ -25,7 +25,7 @@ the full list of changes, which fall into two groups:
 Requires only a C compiler and `make`; no autotools. libxcrypt provides
 `crypt()`:
 
-```sh
+```bash
 # libcrypt-dev provides the libcrypt.so link the build prefers.
 # Without it, the Makefile falls back to libcrypt.so.1 automatically.
 sudo apt install build-essential libcrypt-dev
@@ -65,7 +65,7 @@ exist but are normally driven by the ones above.
 
 ## Testing
 
-```sh
+```bash
 make test
 ```
 
