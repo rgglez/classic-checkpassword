@@ -1,0 +1,102 @@
+CHANGELOG
+=========
+
+Port of checkpassword-0.90 (D. J. Bernstein) to build on Debian 13 (trixie)
+with GCC 15 / glibc 2.x / libxcrypt.
+
+Root cause
+----------
+GCC 15 defaults to the C23 standard, in which an empty parameter list "()"
+means "(void)" (zero arguments) instead of the old K&R "unspecified
+arguments". This breaks the many empty-prototype declarations DJB relies on.
+Additionally, modern glibc defines `errno` as a macro, and libxcrypt no
+longer ships a `libcrypt.so` symlink unless libcrypt-dev is installed.
+
+Changes
+-------
+- conf-cc
+  Added compiler flags: -std=gnu17 -fcommon -Wno-implicit-int
+  -Wno-implicit-function-declaration -Wno-int-conversion
+  -Wno-incompatible-pointer-types
+  -std=gnu17 restores the pre-C23 meaning of empty prototypes; the -Wno-*
+  flags downgrade errors that GCC 14+ promoted from warnings.
+
+- error.h
+  Replaced `extern int errno;` with `#include <errno.h>`.
+  `errno` is a macro in modern glibc, so the extern declaration is invalid.
+
+- exit.h
+  Replaced `extern void _exit();` with `#include <unistd.h>`.
+
+- readwrite.h
+  Replaced `extern int read(); extern int write();` with
+  `#include <unistd.h>`. The old int-returning prototypes conflict with the
+  ssize_t signatures in unistd.h.
+
+- checkpassword.c
+  Replaced `extern char *crypt();` with a full prototype
+  `extern char *crypt(const char *, const char *);` so the 2-argument call
+  is accepted under C23 rules, without depending on <crypt.h>.
+
+- Makefile (crypt.lib rule)
+  Added a fallback: if `-lcrypt` linking fails (libcrypt-dev not installed,
+  so no libcrypt.so symlink), fall back to the versioned shared object
+  /usr/lib/x86_64-linux-gnu/libcrypt.so.1.
+  Cleaner alternative: install libcrypt-dev and revert this line, letting the
+  autodetection emit `-lcrypt` on its own.
+
+Result
+------
+Builds cleanly: checkpassword, install, instcheck.
+Verified: `./checkpassword` with no args exits 2; binary links libcrypt.so.1.
+
+Security fixes
+--------------
+- checkpassword.c: check crypt() return value for NULL.
+  Original code assumed crypt() never fails. Modern libxcrypt returns NULL
+  on malformed salt/setting strings — e.g. locked accounts ("!", "*") or the
+  shadow placeholder "x" — causing strcmp(NULL, stored) to crash with
+  SIGSEGV. Denial of service, remotely triggerable by submitting any locked
+  username. Now exits 1 instead.
+
+- checkpassword.c: equalize timing for unknown users.
+  Previously an unknown username exited immediately, while a valid username
+  ran a full crypt() (~yescrypt cost). The timing difference allowed remote
+  enumeration of valid logins. Both failure paths (unknown user, no stored
+  hash) now run crypt() against a fixed dummy yescrypt setting
+  ("$y$j9T$...", the Debian default cost) before exiting.
+
+- checkpassword.c: wipe the login/password buffer with explicit_bzero().
+  The original zeroing loop was a dead store the compiler is allowed to
+  optimize away, leaving the plaintext password in memory. explicit_bzero()
+  cannot be elided. The buffer is now also wiped on the failure paths above.
+
+- checkpassword.c: clear errno before getpwnam()/getspnam()/getuserpw().
+  These functions do not reliably set errno when the user is simply not
+  found; a stale ETXTBSY from an earlier syscall could turn "unknown user"
+  (exit 1) into a spurious temporary failure (exit 111).
+
+- gen_allocdefs.h, alloc.c: integer overflow guards in the allocators.
+  The stralloc growth arithmetic (base + n + n/8, n + len, n * sizeof(type))
+  and the alloc() alignment round-up (marked "XXX: could overflow" by the
+  author) could wrap around unsigned int for sizes near 4GB, producing an
+  undersized allocation followed by a heap overflow. Requests that would
+  wrap are now rejected as allocation failures. Not reachable in
+  checkpassword itself (input is capped at 512 bytes), fixed for hardening.
+
+Tests
+-----
+- test_unit.c: assert-based unit tests for the library primitives
+  (str_len/str_chr/str_start, byte_copy/byte_diff, stralloc building and
+  growth across reallocation, allocator integer-overflow guards).
+- test_checkpassword.sh: exit-code tests for the binary (no-arg, empty,
+  malformed and oversized input, unknown user, wrong password — the last
+  one exercising the crypt() NULL path when shadow is unreadable).
+- Makefile: new "make test" target builds and runs both.
+
+Verified: real user + wrong password exits 1 (previously SIGSEGV via NULL
+crypt() result when shadow is unreadable); unknown user exits 1 after a
+dummy crypt() with the same cost parameters as /etc/shadow defaults;
+allocator unit test confirms sane sizes still succeed and wrap-inducing
+sizes (0xFFFFFFF0, n+len wrap, growth-math wrap) are rejected without
+crashing.

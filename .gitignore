@@ -1,0 +1,43 @@
+# --- C build artifacts ---
+*.o
+*.a
+*.so
+*.so.*
+*.lib
+*.exe
+*.out
+core
+
+# --- DJB-style generated scripts ---
+/compile
+/load
+/choose
+/makelib
+
+# --- Generated headers / config probes ---
+/hasshsgr.h
+/hasspnam.h
+/hasuserpw.h
+/systype
+/crypt.lib
+/shadow.lib
+/s.lib
+
+# --- Generated source ---
+/auto_home.c
+
+# --- Compiled binaries ---
+/auto-str
+/checkpassword
+/chkshsgr
+/install
+/instcheck
+/test_unit
+
+# --- Config-probe leftovers (from try*.c) ---
+/trycrypt
+/tryshadow
+/tryslib
+/tryspnam
+/tryuserpw
+/x86cpuid
