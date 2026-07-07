@@ -75,9 +75,9 @@ The upstream package is in the **public domain**. On **2018-07-29** D. J.
 Bernstein dedicated `checkpassword-0.90.tar.gz` (SHA-256
 `74300364b6be26be08e34f768532e911789827179e680bc89db3525fe415762f`) to the
 public domain, stating *"the package is no longer copyrighted"*
-(<https://cr.yp.to/distributors.html>). The `Copyright 2000` notice in
-[README_ORIGINAL](README_ORIGINAL) predates that dedication and no longer
-applies.
+(<https://cr.yp.to/distributors.html>) as seen below. The `Copyright 2000`
+notice in [README_ORIGINAL](README_ORIGINAL) predates that dedication and no
+longer applies.
 
 ![djbscreen.png](djbscreen.png)
 
