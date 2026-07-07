@@ -9,8 +9,8 @@ of the *checkpassword* interface used by qmail-pop3d, dovecot, and others.
 This is an **unofficial fork** of the upstream `checkpassword-0.90.tar.gz`
 (released 2000-12-22, <http://cr.yp.to/checkpwd.html>) patched to compile and
 run on **Debian 13 (trixie)** with **GCC 15 / glibc / libxcrypt**. The original
-source no longer builds on a modern toolchain. See [CHANGELOG](CHANGELOG) for the
-full list of changes, which fall into two groups:
+source no longer builds on a modern toolchain. See [CHANGELOG](CHANGELOG) for
+the full list of changes, which fall into two groups:
 
 - **Portability** — the C23 default of GCC 15 (empty `()` prototypes now mean
   "no arguments"), `errno` as a macro, and libxcrypt's missing `libcrypt.so`
@@ -79,8 +79,11 @@ public domain, stating *"the package is no longer copyrighted"*
 [README_ORIGINAL](README_ORIGINAL) predates that dedication and no longer
 applies.
 
+![djbscreen.png](djbscreen.png)
+
 Because the base is public-domain, the modifications in this fork can be
-released under any terms. This fork uses **[0BSD](https://opensource.org/license/0bsd)**
-(BSD Zero-Clause License) — OSI-approved, no attribution requirement, and it
-keeps the permissive, public-domain spirit of the original while being a clear,
-recognized license for downstream users — see [LICENSE](LICENSE).
+released under any terms. This fork uses
+**[0BSD](https://opensource.org/license/0bsd)** (BSD Zero-Clause License) —
+OSI-approved, no attribution requirement, and it keeps the permissive,
+public-domain spirit of the original while being a clear, recognized license for
+downstream users. Please read the [LICENSE](LICENSE) file.
