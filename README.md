@@ -46,13 +46,19 @@ Edit those files, not the Makefile, to change the build.
 
 ## Make targets
 
-| Target | Description |
-| --- | --- |
-| `make` / `make it` | **Default.** Build everything: the `checkpassword` binary plus the `install` and `instcheck` helpers. |
-| `make setup` | Build, then run `./install` to copy `checkpassword` into `<conf-home>/bin` (default `/bin/checkpassword`, mode 0700, owner root). Needs root. |
-| `make check` | Build, then run `./instcheck` to verify an existing installation's paths and permissions. |
-| `make test` | *(this fork)* Build and run the test suites: `test_unit` (library primitives + allocator overflow guards) and `test_checkpassword.sh` (binary exit codes). |
-| `make clean` | *(this fork)* Remove all build products: object files, `*.a` archives, generated scripts (`compile`, `load`, …), probe files, and every compiled binary. Leaves sources and `conf-*` untouched; `make` rebuilds. |
+- `make` / `make it` — **Default.** Build everything: the `checkpassword`
+  binary plus the `install` and `instcheck` helpers.
+- `make setup` — Build, then run `./install` to copy `checkpassword` into
+  `<conf-home>/bin` (default `/bin/checkpassword`, mode 0700, owner root). Needs
+  root.
+- `make check` — Build, then run `./instcheck` to verify an existing
+  installation's paths and permissions.
+- `make test` — *(this fork)* Build and run the test suites: `test_unit`
+  (library primitives + allocator overflow guards) and `test_checkpassword.sh`
+  (binary exit codes).
+- `make clean` — *(this fork)* Remove all build products: object files, `*.a`
+  archives, generated scripts (`compile`, `load`, …), probe files, and every
+  compiled binary. Leaves sources and `conf-*` untouched; `make` rebuilds.
 
 Lower-level targets (`prog`, the individual `*.o`, `unix.a`, `byte.a`, `*.lib`)
 exist but are normally driven by the ones above.
